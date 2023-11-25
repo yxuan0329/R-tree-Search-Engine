@@ -1,29 +1,71 @@
 #ifndef NODE_H
 #define NODE_H
 
-template<typename DataType>
+#include <vector>
+
+// define point with logitude, latitude, 2 points make a Rect for bounding box
+class Point {
+public:
+    Point();
+    ~Point();
+
+    Point(double, double); // longtitude, latitude
+    Point(double, double, int);
+
+    bool operator==(const Point&) const;
+    bool operator!=(const Point&) const;
+
+    const double& getLong() const { return longtitude; }
+    const double& getLat() const { return latitude; }
+
+private:    
+    double longtitude, latitude;
+    int id;
+};
+
+// define a bounding box with 2 points, left lower and right upper
+class Rect {
+public:
+    Rect();
+    ~Rect();
+
+    Rect(Point, Point, int);
+
+    bool operator==(const Rect&) const;
+    bool operator!=(const Rect&) const;
+
+    const Point& getLower() const { return lower; }
+    const Point& getUpper() const { return upper; } 
+
+private:
+    Point lower;
+    Point upper;
+    int id;
+};
+
+// define a node with a bounding box for itself
+// and a list of children nodes, representing the children bounding box that will 
+// overlap with this node.
 class Node {
 public:
     Node();
     ~Node();
 
-    Node(int, DataType, DataType);
-    Node(int, DataType, DataType, DataType);
+    Node(Rect, Node*);
 
     bool operator==(const Node&) const;
     bool operator!=(const Node&) const;
 
-    const DataType& getLong() const { return longtitude; }
-    const DataType& getLat() const { return latitude; }
-    const DataType& getAlt() const { return altitude; }
-    const bool isLeaf() const { return isLeaf; }    
+    const Rect& getRect() const { return rect; }
+    const Node* getChild(int) const;
+
+    bool isLeaf() const;
 
 private:
-    int id; // id of the node(location), for referencing the location name
-    DataType longtitude = 0.0;
-    DataType latitude = 0.0;
-    DataType altitude = 0.0;
-    bool isLeaf = true;
+    Rect rect;
+    std::vector<Node*> children;
+    Node* parent;
+    bool isLeafNode;
 };
 
 #endif
