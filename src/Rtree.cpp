@@ -8,15 +8,20 @@
 Rtree::Rtree() {}
 
 Rtree::~Rtree() {
-    delete this;
+    // delete this;
 }
 
 Rtree::Rtree(Node* root) {
     this->root = root;
 }
 
-void Rtree::insert(Rect rect) {
-    // TODO
+void Rtree::insert(Rect rect1) {
+    if (root == nullptr) {
+        root = new Node(rect1, nullptr);
+    } else {
+        root->insertChild(rect1);
+    }
+    size++;
 }
 
 void Rtree::remove(Rect rect) {

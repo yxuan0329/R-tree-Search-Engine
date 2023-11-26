@@ -5,7 +5,7 @@
 Point::Point() {}
 
 Point::~Point() {
-    delete this;
+    // delete this;
 }
 
 Point::Point(double longtitude, double latitude) {
@@ -33,7 +33,7 @@ bool Point::operator!=(const Point& p) const {
 Rect::Rect() {}
 
 Rect::~Rect() {
-    delete this;
+    // delete this;
 }
 
 Rect::Rect(Point lower, Point upper, int id) {
@@ -63,6 +63,10 @@ Node::~Node() {
 Node::Node(Rect rect, Node* parent) {
     this->rect = rect;
     this->parent = parent;
+}
+
+void Node::insertChild(Rect rect) {
+    children.push_back(new Node(rect, this));
 }
 
 bool Node::operator==(const Node& n) const {

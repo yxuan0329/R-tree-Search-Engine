@@ -44,7 +44,7 @@ private:
 };
 
 // define a node with a bounding box for itself
-// and a list of children nodes, representing the children bounding box that will 
+// and a list of children nodes, representing the children bounding box that
 // overlap with this node.
 class Node {
 public:
@@ -52,6 +52,8 @@ public:
     ~Node();
 
     Node(Rect, Node*);
+
+    void insertChild(Rect);
 
     bool operator==(const Node&) const;
     bool operator!=(const Node&) const;
