@@ -1,7 +1,7 @@
 #ifndef RTREE_H
 #define RTREE_H
 
-#include "Node.h"
+#include <Node.h>
 
 // create a R-tree with a root node
 class Rtree {
@@ -11,16 +11,16 @@ public:
 
     Rtree(Node*);
 
-    const Node* getRoot() const { return root; }
-    const int getSize() const { return size; }
+    const Node* getRoot() const { return m_root; }
+    const int getSize() const { return m_treeSize; }
 
     void insert(Rect);
     void remove(Rect);
     void search(Rect);
 
 private:
-    Node* root = nullptr;
-    int size = 0;
+    Node* m_root = nullptr; // the root of tree
+    int m_treeSize = 0; // the number of nodes in the tree
 };
 
 #endif

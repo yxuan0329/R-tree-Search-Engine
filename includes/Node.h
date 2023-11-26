@@ -15,12 +15,12 @@ public:
     bool operator==(const Point&) const;
     bool operator!=(const Point&) const;
 
-    const double& getLong() const { return longtitude; }
-    const double& getLat() const { return latitude; }
+    const double& getLong() const { return m_longtitude; }
+    const double& getLat() const { return m_latitude; }
 
 private:    
-    double longtitude, latitude;
-    int id;
+    double m_longtitude, m_latitude;
+    int m_id;
 };
 
 // define a bounding box with 2 points, left lower and right upper
@@ -34,13 +34,13 @@ public:
     bool operator==(const Rect&) const;
     bool operator!=(const Rect&) const;
 
-    const Point& getLower() const { return lower; }
-    const Point& getUpper() const { return upper; } 
+    const Point& getLowerLeft() const { return m_ll; }
+    const Point& getUpperRight() const { return m_ur; } 
 
 private:
-    Point lower;
-    Point upper;
-    int id;
+    Point m_ll;
+    Point m_ur;
+    int m_id;
 };
 
 // define a node with a bounding box for itself
@@ -58,16 +58,16 @@ public:
     bool operator==(const Node&) const;
     bool operator!=(const Node&) const;
 
-    const Rect& getRect() const { return rect; }
+    const Rect& getRect() const { return m_rect; }
     const Node* getChild(int) const;
 
     bool isLeaf() const;
 
 private:
-    Rect rect;
-    std::vector<Node*> children;
-    Node* parent;
-    bool isLeafNode;
+    Rect m_rect;
+    std::vector<Node*> m_children;
+    Node* m_parent;
+    bool m_isLeafNode;
 };
 
 #endif

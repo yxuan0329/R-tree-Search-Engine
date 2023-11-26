@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Node.h"
+#include <../includes/Node.h>
 
 // Point
 Point::Point() {}
@@ -9,19 +9,19 @@ Point::~Point() {
 }
 
 Point::Point(double longtitude, double latitude) {
-    this->longtitude = longtitude;
-    this->latitude = latitude;
-    this->id = 0;
+    this->m_longtitude = longtitude;
+    this->m_latitude = latitude;
+    this->m_id = 0;
 }
 
 Point::Point(double longtitude, double latitude, int id) {
-    this->longtitude = longtitude;
-    this->latitude = latitude;
-    this->id = id;
+    this->m_longtitude = longtitude;
+    this->m_latitude = latitude;
+    this->m_id = id;
 }
 
 bool Point::operator==(const Point& p) const {
-    return (this->longtitude == p.longtitude) && (this->latitude == p.latitude) && (this->id == p.id);
+    return (this->m_longtitude == p.m_longtitude) && (this->m_latitude == p.m_latitude) && (this->m_id == p.m_id);
 }
 
 bool Point::operator!=(const Point& p) const {
@@ -37,13 +37,13 @@ Rect::~Rect() {
 }
 
 Rect::Rect(Point lower, Point upper, int id) {
-    this->lower = lower;
-    this->upper = upper;
-    this->id = id;
+    this->m_ll = lower;
+    this->m_ur = upper;
+    this->m_id = id;
 }
 
 bool Rect::operator==(const Rect& r) const {
-    return (this->lower == r.lower) && (this->upper == r.upper) && (this->id == r.id);
+    return (this->m_ll == r.m_ll) && (this->m_ur == r.m_ur) && (this->m_id == r.m_id);
 }
 
 bool Rect::operator!=(const Rect& r) const {
@@ -54,23 +54,23 @@ bool Rect::operator!=(const Rect& r) const {
 Node::Node() {}
 
 Node::~Node() {
-    for (auto child : children) {
+    for (auto child : m_children) {
         delete child;
     }
     delete this;
 }
 
 Node::Node(Rect rect, Node* parent) {
-    this->rect = rect;
-    this->parent = parent;
+    this->m_rect = rect;
+    this->m_parent = parent;
 }
 
 void Node::insertChild(Rect rect) {
-    children.push_back(new Node(rect, this));
+    m_children.push_back(new Node(rect, this));
 }
 
 bool Node::operator==(const Node& n) const {
-    return (this->rect == n.rect) && (this->children == n.children) && (this->parent == n.parent);
+    return (this->m_rect == n.m_rect) && (this->m_children == n.m_children) && (this->m_parent == n.m_parent);
 }
 
 bool Node::operator!=(const Node& n) const {
@@ -78,9 +78,9 @@ bool Node::operator!=(const Node& n) const {
 }
 
 const Node* Node::getChild(int index) const {
-    return children[index];
+    return m_children[index];
 }
 
 bool Node::isLeaf() const {
-    return children.empty();
+    return m_children.empty();
 }

@@ -1,5 +1,5 @@
-#include "Rtree.h"
-#include "Node.h"
+#include <Node.h>
+#include <Rtree.h>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -20,8 +20,8 @@ PYBIND11_MODULE(_myRtree, m) {
     py::class_<Rect>(m, "Rect")
         .def(py::init<>())
         .def(py::init<Point, Point, int>())
-        .def("getLower", &Rect::getLower)
-        .def("getUpper", &Rect::getUpper)
+        .def("getLower", &Rect::getLowerLeft)
+        .def("getUpper", &Rect::getUpperRight)
         .def("__eq__", &Rect::operator==)
         .def("__neq__", &Rect::operator!=);
 
