@@ -16,7 +16,8 @@ jobs:
     
     - name: install dependencies
       run: sudo apt-get install pip | 
-           pip install pybind11
+           pip install pybind11 |
+            pip install pytest
       
     - name: make
       run: make
