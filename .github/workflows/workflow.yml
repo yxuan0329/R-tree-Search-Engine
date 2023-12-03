@@ -16,10 +16,10 @@ jobs:
     
     - name: install dependencies
       run: |
-          sudo apt-get update \            
-          sudo apt-get install pip \ 
-          pip install pybind11 \
-          pip install pytest \
+          sudo apt-get update             
+          sudo apt-get install pip  
+          pip install pybind11 
+          pip install pytest 
           pip install rtree
       
     - name: make
