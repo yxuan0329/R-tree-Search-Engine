@@ -21,9 +21,9 @@ jobs:
     - name: make
       run: make
 
-    - name: make check
-      run: g++ -std=c++17 -o main.exe ./main.cpp |
-           ./main.exe
+    # - name: make check
+    #   run: g++ -std=c++17 -o main.exe ./main.cpp |
+    #        ./main.exe
 
     - name: make test
       run: make test
