@@ -2,8 +2,8 @@
 #include <vector>
 #include <algorithm>
 
-#include <includes/Node.h>
-#include <includes/Rtree.h>
+#include <Node.h>
+#include <Rtree.h>
 
 
 int main(){
