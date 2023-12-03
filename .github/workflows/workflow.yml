@@ -16,18 +16,19 @@ jobs:
     
     - name: install dependencies
       run: |
-          sudo apt-get update |            
-          sudo apt-get install pip | 
-          pip install pybind11 |
-          pip install pytest |
+          sudo apt-get update \            
+          sudo apt-get install pip \ 
+          pip install pybind11 \
+          pip install pytest \
           pip install rtree
       
     - name: make
       run: make
 
     - name: run main program
-      run: g++ -std=c++17 -o main.exe main.cpp src/Rtree.cpp src/Node.cpp -I./includes |
-           ./main.exe
+      run: | 
+          g++ -std=c++17 -o main.exe main.cpp src/Rtree.cpp src/Node.cpp -I./includes 
+          ./main.exe
 
     - name: make test
       run: make test
