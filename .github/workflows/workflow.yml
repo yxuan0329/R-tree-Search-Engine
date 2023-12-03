@@ -1,0 +1,34 @@
+name: R-tree CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: install dependencies
+      run: |
+          sudo apt-get update             
+          sudo apt-get install pip  
+          pip install pybind11 
+          pip install pytest 
+          pip install rtree
+      
+    - name: make
+      run: make
+
+    - name: run main program
+      run: | 
+          g++ -std=c++17 -o main.exe main.cpp src/Rtree.cpp src/Node.cpp -I./includes 
+          ./main.exe
+
+    - name: make test
+      run: make test
