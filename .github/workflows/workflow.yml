@@ -17,7 +17,8 @@ jobs:
     - name: install dependencies
       run: sudo apt-get install pip | 
            pip install pybind11 |
-            pip install pytest
+           pip install pytest |
+           pip install rtree
       
     - name: make
       run: make
