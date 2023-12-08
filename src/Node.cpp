@@ -60,13 +60,15 @@ Node::~Node() {
     delete this;
 }
 
-Node::Node(Rect rect, Node* parent) {
+Node::Node(Rect rect, Node* parent=nullptr, std::vector<Node*> children={}, bool isLeaf=false) {
     this->m_rect = rect;
     this->m_parent = parent;
+    this->m_children = children;
+    this->m_isLeafNode = isLeaf;
 }
 
 void Node::insertChild(Rect rect) {
-    m_children.push_back(new Node(rect, this));
+    m_children.push_back(new Node(rect));
 }
 
 bool Node::operator==(const Node& n) const {
@@ -79,6 +81,10 @@ bool Node::operator!=(const Node& n) const {
 
 const Node* Node::getChild(int index) const {
     return m_children[index];
+}
+
+const std::vector<Node*>& Node::getChildren() const {
+    return m_children;
 }
 
 bool Node::isLeaf() const {

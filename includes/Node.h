@@ -36,6 +36,7 @@ public:
 
     const Point& getLowerLeft() const { return m_ll; }
     const Point& getUpperRight() const { return m_ur; } 
+    double getArea() const { return (m_ur.getLong() - m_ll.getLong()) * (m_ur.getLat() - m_ll.getLat()); }
 
 private:
     Point m_ll;
@@ -51,7 +52,7 @@ public:
     Node();
     ~Node();
 
-    Node(Rect, Node*);
+    Node(Rect, Node*, std::vector<Node*>, bool);
 
     void insertChild(Rect);
 
@@ -60,6 +61,7 @@ public:
 
     const Rect& getRect() const { return m_rect; }
     const Node* getChild(int) const;
+    const std::vector<Node*>& getChildren() const;
 
     bool isLeaf() const;
 
@@ -68,6 +70,7 @@ private:
     std::vector<Node*> m_children;
     Node* m_parent;
     bool m_isLeafNode;
+    int maxChildrenSize = 4;
 };
 
 #endif
