@@ -2,6 +2,8 @@
 #define RTREE_H
 
 #include <Node.h>
+#include <cstddef>
+#include <vector>
 
 // create a R-tree with a root node
 class Rtree {

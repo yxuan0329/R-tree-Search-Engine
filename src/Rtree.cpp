@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>   
+#include <cstddef>
 
 #include <Node.h>
 #include <Rtree.h>
@@ -42,7 +43,7 @@ void Rtree::search(Rect rect) {
 }
 
 Node *Rtree::chooseLeaf(Node *currNode, Rect rect) {
-    // search from root, find the leaf node that has the minimum area enlargement
+    // search from root, find the leaf node that has the maximum overlap area with rect
     // and return the leaf node
     if (currNode->isLeaf()) {
         return currNode;
@@ -62,10 +63,11 @@ Node *Rtree::chooseLeaf(Node *currNode, Rect rect) {
         }
     }
 
-    // if maxOverlappedArea == 0.0, then set currNode as selectedChild,
-    // rect will be slpit as a new leaf node
+    // if maxOverlappedArea == 0.0, means there is no overlap between rect and currNode,
+    // then set currNode as selectedChild,
+    // rect will be split as a new leaf node
     if (maxOverlappedArea == 0.0) {
-        selectedChild = currNode;
+        return currNode;
     }
     return chooseLeaf(selectedChild, rect);
     
