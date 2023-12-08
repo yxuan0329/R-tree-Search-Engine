@@ -21,6 +21,7 @@ public:
     Node *chooseLeaf(Node*, Rect);
     Node *splitNewNode(Node*);
     void adjustTree(Node*, Node*);
+    void clearTree();
     
 
 private:

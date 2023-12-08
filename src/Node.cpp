@@ -71,6 +71,10 @@ void Node::insertChild(Rect rect) {
     m_children.push_back(new Node(rect));
 }
 
+void Node::removeChild(Rect rect) {
+    // TODO
+}
+
 bool Node::operator==(const Node& n) const {
     return (this->m_rect == n.m_rect) && (this->m_children == n.m_children) && (this->m_parent == n.m_parent);
 }
@@ -85,6 +89,22 @@ const Node* Node::getChild(int index) const {
 
 const std::vector<Node*>& Node::getChildren() const {
     return m_children;
+}
+
+void Node::setChildren(std::vector<Node*> children) {
+    this->m_children = children;
+}
+
+Node* Node::getParent() const {
+    return m_parent;
+}
+
+void Node::setParent(Node* parent) {
+    this->m_parent = parent;
+}
+
+void Node::setRect(Rect rect) {
+    this->m_rect = rect;
 }
 
 bool Node::isLeaf() const {

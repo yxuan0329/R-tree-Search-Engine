@@ -55,13 +55,18 @@ public:
     Node(Rect, Node*, std::vector<Node*>, bool);
 
     void insertChild(Rect);
+    void removeChild(Rect);
 
     bool operator==(const Node&) const;
     bool operator!=(const Node&) const;
 
     const Rect& getRect() const { return m_rect; }
     const Node* getChild(int) const;
+    Node* getParent() const;
     const std::vector<Node*>& getChildren() const;
+    void setChildren(std::vector<Node*>);
+    void setParent(Node*);
+    void setRect(Rect);
 
     bool isLeaf() const;
 
