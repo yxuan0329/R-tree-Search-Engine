@@ -51,7 +51,11 @@ bool Rect::operator!=(const Rect& r) const {
 }
 
 // Node
-Node::Node() {}
+Node::Node() { // create a single new leaf node in the tree
+    this->m_parent = nullptr;
+    this->m_children = {};
+    this->m_isLeafNode = true;
+}
 
 Node::~Node() {
     for (auto child : m_children) {
@@ -68,7 +72,10 @@ Node::Node(Rect rect, Node* parent=nullptr, std::vector<Node*> children={}, bool
 }
 
 void Node::insertChild(Rect rect) {
+    this->m_isLeafNode = false;
+    Node *newNode = new Node(rect);
     m_children.push_back(new Node(rect));
+    newNode->setParent(this);
 }
 
 void Node::removeChild(Rect rect) {

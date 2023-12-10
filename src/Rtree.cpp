@@ -8,7 +8,9 @@
 #include <Rtree.h>
 
 // Rtree
-Rtree::Rtree() {}
+Rtree::Rtree() {
+    this->m_root = new Node();
+}
 
 Rtree::~Rtree() {
     // delete this;
@@ -19,17 +21,13 @@ Rtree::Rtree(Node* root) {
 }
 
 void Rtree::insert(Rect rect) {
-    if (this->m_root == nullptr) { // if the tree is empty
-        this->m_root = new Node(rect, nullptr, {}, true); // rect, parent, children, isLeaf=true
-    } else { // if the tree is not empty
-        Node *parent = chooseLeaf(this->m_root, rect);
-        parent->insertChild(rect);
+    Node *parent = chooseLeafAsParent(this->m_root, rect);
+    parent->insertChild(rect);
 
-        // if the parent has more than m_maxChildren children, then split the parent
-        if (parent->getChildren().size() > m_maxChildren) {
-            Node *splitNode = splitNewNode(parent);
-            adjustTree(parent, splitNode);
-        }
+    // if the parent has more than m_maxChildren children, then split the parent
+    if (parent->getChildren().size() > m_maxChildren) {
+        Node *splitNode = splitNewNode(parent);
+        adjustTree(parent, splitNode);
     }
     this->m_treeSize ++;
 }
@@ -42,7 +40,7 @@ void Rtree::search(Rect rect) {
     // TODO
 }
 
-Node *Rtree::chooseLeaf(Node *currNode, Rect rect) {
+Node *Rtree::chooseLeafAsParent(Node *currNode, Rect rect) {
     // search from root, find the leaf node that has the maximum overlap area with rect
     // and return the leaf node
     if (currNode->isLeaf()) {
@@ -69,7 +67,7 @@ Node *Rtree::chooseLeaf(Node *currNode, Rect rect) {
     if (maxOverlappedArea == 0.0) {
         return currNode;
     }
-    return chooseLeaf(selectedChild, rect);
+    return chooseLeafAsParent(selectedChild, rect);
     
 }
 
@@ -85,14 +83,15 @@ Node *Rtree::splitNewNode(Node *currNode) {
     // split the currNode into two nodes, and return the new node
 
     // sort children by x-coord of lower-left corner
-    std::sort(currNode->getChildren().begin(), currNode->getChildren().end(), [](Node *a, Node *b) {
+    std::vector<Node*> children = currNode->getChildren();
+    std::sort(children.begin(), children.end(), [](Node *a, Node *b) {
         return a->getRect().getLowerLeft().getLong() < b->getRect().getLowerLeft().getLong();
     });
 
     // split the children into two groups
-    size_t splitIndex = currNode->getChildren().size() / 2;
-    std::vector<Node*> leftGroup(currNode->getChildren().begin(), currNode->getChildren().begin() + splitIndex);
-    std::vector<Node*> rightGroup(currNode->getChildren().begin() + splitIndex, currNode->getChildren().end());
+    size_t splitIndex = children.size() / 2;
+    std::vector<Node*> leftGroup(children.begin(), children.begin() + splitIndex);
+    std::vector<Node*> rightGroup(children.begin() + splitIndex, children.end());
 
     // according to the rect in leftGroup, find minimum bounding rect
     Rect currRect = currNode->getRect();
