@@ -15,7 +15,7 @@ def test_init():
     p2 = _Rtree.Point(1, 1)
     r1 = _Rtree.Rect(p1, p2, 1)
     Rtree.insert(r1)
-    assert Rtree.getSize() == 1
+    assert Rtree.getSize() == 2
 
 def test_split():
     Rtree = _Rtree.Rtree()
@@ -23,20 +23,22 @@ def test_split():
     p2 = _Rtree.Point(2, 2)
     r1 = _Rtree.Rect(p1, p2, 1)
     Rtree.insert(r1)
-    assert Rtree.getSize() == 1
-    # print(Rtree.getRoot()) # this will cause segmentation fault
+    assert Rtree.getSize() == 2
+    print(Rtree.getRoot()) # this will cause segmentation fault
 
-    # add another rect and check the tree size is two
-    p3 = _Rtree.Point(1, 1)
-    p4 = _Rtree.Point(3, 3)
+    # add another rect and check the tree size is three
+    p3 = _Rtree.Point(3, 3)
+    p4 = _Rtree.Point(4, 4)
     r2 = _Rtree.Rect(p3, p4, 2)
     Rtree.insert(r2)
-    assert Rtree.getSize() == 2
-
-    r3 = _Rtree.Rect(p1, p3, 3) # this should be inside r1
-    Rtree.insert(r3)
     assert Rtree.getSize() == 3
-    
+
+    # add another rect and check the tree size is four
+    p5 = _Rtree.Point(1, 1)
+    r3 = _Rtree.Rect(p1, p5, 3) # this should be inside r1
+    Rtree.insert(r3)
+    assert Rtree.getSize() == 4
+
 
 
     

@@ -10,6 +10,7 @@
 // Rtree
 Rtree::Rtree() {
     this->m_root = new Node();
+    this->m_treeSize = 1;
 }
 
 Rtree::~Rtree() {
