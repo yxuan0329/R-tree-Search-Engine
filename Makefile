@@ -9,7 +9,7 @@ TARGET = _Rtree.so
 all: $(TARGET)
 
 $(TARGET): $(INCLUDES) $(SRCS) pybind.cpp
-	$(CXX) $^ $(CXXFLAGS) -I/usr/include/mk -I$(CIMPORTPATH) -o $@
+	$(CXX) $^ $(CXXFLAGS) -I/usr/include/mk -I$(CIMPORTPATH) -o $@ -g
 
 clean:
 	rm -f *.so *.o

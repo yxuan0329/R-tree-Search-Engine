@@ -69,6 +69,8 @@ public:
     void setChildren(std::vector<Node*>);
     void setParent(Node*);
     void setRect(Rect);
+    void setIsLeaf(bool);
+    void updateRect(Node*, Rect);
 
     bool isLeaf() const;
 

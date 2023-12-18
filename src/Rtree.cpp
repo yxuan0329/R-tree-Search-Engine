@@ -21,6 +21,10 @@ Rtree::Rtree(Node* root) {
     this->m_root = root;
 }
 
+const Node* Rtree::getRoot() const {
+    return this->m_root;
+}
+
 void Rtree::insert(Rect rect) {
     Node *parent = chooseLeafAsParent(this->m_root, rect);
     parent->insertChild(rect);

@@ -52,6 +52,7 @@ bool Rect::operator!=(const Rect& r) const {
 
 // Node
 Node::Node() { // create a single new leaf node in the tree
+    // this->m_rect = Rect(Point(0, 0), Point(0, 0), 0);
     this->m_parent = nullptr;
     this->m_children = {};
     this->m_isLeafNode = true;
@@ -112,6 +113,17 @@ void Node::setParent(Node* parent) {
 
 void Node::setRect(Rect rect) {
     this->m_rect = rect;
+}
+
+void updateRect(Node* currNode, Rect rect) {
+    // set a new rect that combine original and new rect
+    Rect newRect = currNode->getRect();
+    double llx = std::min(currNode->getRect().getLowerLeft().getLong(), rect.getLowerLeft().getLong());
+    double lly = std::min(currNode->getRect().getLowerLeft().getLat(), rect.getLowerLeft().getLat());
+    double urx = std::max(currNode->getRect().getUpperRight().getLong(), rect.getUpperRight().getLong());
+    double ury = std::max(currNode->getRect().getUpperRight().getLat(), rect.getUpperRight().getLat());
+    newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+    currNode->setRect(newRect);
 }
 
 bool Node::isLeaf() const {

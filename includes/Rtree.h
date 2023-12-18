@@ -13,7 +13,7 @@ public:
 
     Rtree(Node*);
 
-    const Node* getRoot() const { return m_root; }
+    const Node* getRoot() const;
     const int getSize() const { return m_treeSize; }
     double getOverlapArea(Rect, Rect);
     void setRoot(Node* root) { this->m_root = root; }

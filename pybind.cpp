@@ -41,7 +41,7 @@ PYBIND11_MODULE(_Rtree, m) {
     py::class_<Rtree>(m, "Rtree")
         .def(py::init<>())
         .def(py::init<Node*>())
-        .def("getRoot", &Rtree::getRoot)
+        .def("getRoot", &Rtree::getRoot, py::return_value_policy::reference)
         .def("getSize", &Rtree::getSize)
         .def("insert", &Rtree::insert)
         .def("remove", &Rtree::remove)
