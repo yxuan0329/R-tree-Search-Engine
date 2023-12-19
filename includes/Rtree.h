@@ -19,7 +19,7 @@ public:
     void setRoot(Node* root) { this->m_root = root; }
 
     void insert(Rect);
-    void remove(Rect);
+    void remove(Node *, Rect);
     void search(Rect);
     Node *chooseLeafAsParent(Node*, Rect);
     Node *splitNewNode(Node*);
