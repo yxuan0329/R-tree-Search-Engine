@@ -1,7 +1,7 @@
 #ifndef RTREE_H
 #define RTREE_H
 
-#include <Node.h>
+#include "Node.h"
 #include <cstddef>
 #include <vector>
 
@@ -13,7 +13,7 @@ public:
 
     Rtree(Node*);
 
-    const Node* getRoot() const;
+    Node* getRoot() const;
     const int getSize() const { return m_treeSize; }
     double getOverlapArea(Rect, Rect);
     void setRoot(Node* root) { this->m_root = root; }
@@ -25,7 +25,10 @@ public:
     Node *splitNewNode(Node*);
     void adjustTree(Node*, Node*);
     void clearTree();
-    
+
+    // traverse for debugging
+    void traverse(Node*);  
+    int getHeight(Node*);  
 
 private:
     Node* m_root; // the root of tree

@@ -3,8 +3,9 @@
 #include <algorithm>
 #include <cmath>   
 #include <cstddef>
+#include <climits>
 
-#include <Node.h>
+#include <../includes/Node.h>
 #include <Rtree.h>
 
 // Rtree
@@ -21,7 +22,7 @@ Rtree::Rtree(Node* root) {
     this->m_root = root;
 }
 
-const Node* Rtree::getRoot() const {
+Node* Rtree::getRoot() const {
     return this->m_root;
 }
 
@@ -72,6 +73,18 @@ Node *Rtree::chooseLeafAsParent(Node *currNode, Rect rect) {
     if (maxOverlappedArea == 0.0) {
         return currNode;
     }
+
+    // if maxOverlappedArea > 0.0, means there is overlap between rect and currNode,
+    //  then update current rectangle of selectedChild to include rect
+    // selectedChild->updateRect(selectedChild, rect);
+    Rect newRect = selectedChild->getRect();
+    double llx = std::min(selectedChild->getRect().getLowerLeft().getLong(), rect.getLowerLeft().getLong());
+    double lly = std::min(selectedChild->getRect().getLowerLeft().getLat(), rect.getLowerLeft().getLat());
+    double urx = std::max(selectedChild->getRect().getUpperRight().getLong(), rect.getUpperRight().getLong());
+    double ury = std::max(selectedChild->getRect().getUpperRight().getLat(), rect.getUpperRight().getLat());
+    newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+    selectedChild->setRect(newRect);
+
     return chooseLeafAsParent(selectedChild, rect);
     
 }
@@ -117,7 +130,7 @@ Node *Rtree::splitNewNode(Node *currNode) {
     currNode->setChildren(leftGroup);
 
     // according to the rect in rightGroup, find minimum bounding rect
-    Rect newRect = currNode->getRect();
+    Rect newRect = rightGroup[0]->getRect();
     bool newIsLeaf = true;
     for (auto *child : rightGroup) {
         Rect childRect = child->getRect();
@@ -172,4 +185,37 @@ void Rtree::clearTree() {
     // clear the tree
     delete this->m_root;
     m_root = nullptr;
+}
+
+// traverse in level order and print the tree area
+void Rtree::traverse(Node *currNode) {
+    std::vector<Node*> queue;
+    queue.push_back(currNode);
+
+    while (!queue.empty()) {
+        Node *currNode = queue.front();
+        queue.erase(queue.begin());
+
+        std::cout << "Node: (" << currNode->getRect().getLowerLeft().getLong() << ", " << currNode->getRect().getLowerLeft().getLat() << "), (" << currNode->getRect().getUpperRight().getLong() << ", " << currNode->getRect().getUpperRight().getLat() << ") size=" << currNode->getChildren().size() << std::endl;
+
+        if (!currNode->isLeaf()) {
+            for (auto *child : currNode->getChildren()) {
+                queue.push_back(child);
+            }
+        }
+    }
+}
+
+int Rtree::getHeight(Node *currNode) {
+    // return the height of the tree
+    if (currNode == nullptr) {
+        return 0;
+    }
+
+    int h = 0;
+    for (auto *child : currNode->getChildren()) {
+        h = std::max(h, 1 + getHeight(child));
+    }
+
+    return h;
 }

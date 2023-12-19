@@ -1,6 +1,7 @@
 import rtree as rtreelib
 import pytest
 import math
+import random
 
 import _Rtree
 
@@ -24,7 +25,6 @@ def test_split():
     r1 = _Rtree.Rect(p1, p2, 1)
     Rtree.insert(r1)
     assert Rtree.getSize() == 2
-    print(Rtree.getRoot()) # this will cause segmentation fault
 
     # add another rect and check the tree size is three
     p3 = _Rtree.Point(3, 3)
@@ -38,8 +38,24 @@ def test_split():
     r3 = _Rtree.Rect(p1, p5, 3) # this should be inside r1
     Rtree.insert(r3)
     assert Rtree.getSize() == 4
+    assert Rtree.getHeight(Rtree.getRoot()) < 4
 
+    # random generate points and insert them into the tree
+    for i in range(4):
+        x1 = random.randint(0, 20)
+        y1 = random.randint(0, 20)
+        p1 = _Rtree.Point(x1, y1)
 
+        x2 = random.randint(0, 20)
+        y2 = random.randint(0, 20)
+        p2 = _Rtree.Point(x2, y2)
+
+        r = _Rtree.Rect(p1, p2, i)
+        Rtree.insert(r)
+    assert Rtree.getSize() == 8
+    assert Rtree.getHeight(Rtree.getRoot()) <= 3
+
+    
 
     
     
