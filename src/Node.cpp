@@ -51,7 +51,12 @@ bool Rect::operator!=(const Rect& r) const {
 }
 
 // Node
-Node::Node() {}
+Node::Node() { // create a single new leaf node in the tree
+    // this->m_rect = Rect(Point(0, 0), Point(0, 0), 0);
+    this->m_parent = nullptr;
+    this->m_children = {};
+    this->m_isLeafNode = true;
+}
 
 Node::~Node() {
     for (auto child : m_children) {
@@ -60,13 +65,22 @@ Node::~Node() {
     delete this;
 }
 
-Node::Node(Rect rect, Node* parent) {
+Node::Node(Rect rect, Node* parent=nullptr, std::vector<Node*> children={}, bool isLeaf=false) {
     this->m_rect = rect;
     this->m_parent = parent;
+    this->m_children = children;
+    this->m_isLeafNode = isLeaf;
 }
 
 void Node::insertChild(Rect rect) {
-    m_children.push_back(new Node(rect, this));
+    this->m_isLeafNode = false;
+    Node *newNode = new Node(rect);
+    m_children.push_back(new Node(rect));
+    newNode->setParent(this);
+}
+
+void Node::removeChild(Rect rect) {
+    // TODO
 }
 
 bool Node::operator==(const Node& n) const {
@@ -79,6 +93,37 @@ bool Node::operator!=(const Node& n) const {
 
 const Node* Node::getChild(int index) const {
     return m_children[index];
+}
+
+const std::vector<Node*>& Node::getChildren() const {
+    return m_children;
+}
+
+void Node::setChildren(std::vector<Node*> children) {
+    this->m_children = children;
+}
+
+Node* Node::getParent() const {
+    return m_parent;
+}
+
+void Node::setParent(Node* parent) {
+    this->m_parent = parent;
+}
+
+void Node::setRect(Rect rect) {
+    this->m_rect = rect;
+}
+
+void updateRect(Node* currNode, Rect rect) {
+    // set a new rect that combine original and new rect
+    Rect newRect = currNode->getRect();
+    double llx = std::min(currNode->getRect().getLowerLeft().getLong(), rect.getLowerLeft().getLong());
+    double lly = std::min(currNode->getRect().getLowerLeft().getLat(), rect.getLowerLeft().getLat());
+    double urx = std::max(currNode->getRect().getUpperRight().getLong(), rect.getUpperRight().getLong());
+    double ury = std::max(currNode->getRect().getUpperRight().getLat(), rect.getUpperRight().getLat());
+    newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+    currNode->setRect(newRect);
 }
 
 bool Node::isLeaf() const {
