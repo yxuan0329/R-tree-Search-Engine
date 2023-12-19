@@ -41,6 +41,7 @@ def test_split():
     assert Rtree.getHeight(Rtree.getRoot()) < 4
 
     # random generate points and insert them into the tree
+    random.seed(10)
     for i in range(4):
         x1 = random.randint(0, 20)
         y1 = random.randint(0, 20)
