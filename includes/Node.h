@@ -72,7 +72,6 @@ public:
     void setIsLeaf(bool);
     void updateRect(Node*, Rect);
     bool isInside(Rect, Rect);
-
     bool isLeaf() const;
 
 private:

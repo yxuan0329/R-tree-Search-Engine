@@ -68,6 +68,7 @@ void Rtree::remove(Node *node, Rect rect) {
             node->setRect(newRect);
         }
     }
+
 }
 
 void Rtree::search(Rect rect) {
