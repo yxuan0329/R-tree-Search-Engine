@@ -56,7 +56,6 @@ def test_split():
     assert Rtree.getSize() == 8
     assert Rtree.getHeight(Rtree.getRoot()) <= 3
 
-    
-
-    
-    
+    Rtree.remove(Rtree.getRoot(), r2)
+    assert Rtree.getSize() == 7
+    assert Rtree.getHeight(Rtree.getRoot()) <= 3

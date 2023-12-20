@@ -32,10 +32,13 @@ int main(){
     rtree.insert(Rect(Point(9, 9), Point(10, 10), 6));
     rtree.insert(Rect(Point(3, 1), Point(4, 2), 7));
 
+    // remove rect
+    Node *root = rtree.getRoot();
+    rtree.remove(root, Rect(Point(9, 9), Point(10, 10), 6));
+
     // traverse the tree
     std::cout << std::endl;
     std::cout << "traverse the tree" << std::endl;
-    Node *root = rtree.getRoot();
     rtree.traverse(root);
     return 0;
 }

@@ -38,8 +38,37 @@ void Rtree::insert(Rect rect) {
     this->m_treeSize ++;
 }
 
-void Rtree::remove(Rect rect) {
-    //remove the rect from the tree
+void Rtree::remove(Node *node, Rect rect) {
+    // check if the node's children includes rect
+    // if yes, then recursively search until find the node's child == rect
+
+    for (auto *child : node->getChildren()) {
+        // if child == rect, then remove child from node
+        if (child->getRect() == rect) {
+            node->removeChild(rect);
+            this->m_treeSize --;
+        }
+
+        // if child is not leaf, then recursively search
+        if (child->isInside(rect, child->getRect())) {
+            remove(child, rect);
+
+            // update the rect of node since one of its children is removed
+            Rect newRect = node->getRect();
+            double llx = INT_MAX, lly = INT_MAX;
+            double urx = INT_MIN, ury = INT_MIN;
+            for (auto *child : node->getChildren()) {
+                Rect childRect = child->getRect();
+                llx = std::min(childRect.getLowerLeft().getLong(), llx);
+                lly = std::min(childRect.getLowerLeft().getLat(), lly);
+                urx = std::max(childRect.getUpperRight().getLong(), urx);
+                ury = std::max(childRect.getUpperRight().getLat(), ury);
+            }
+            newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+            node->setRect(newRect);
+        }
+    }
+
 }
 
 void Rtree::search(Rect rect) {

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <algorithm>
+#include <vector>
 #include <../includes/Node.h>
 
 // Point
@@ -80,7 +82,8 @@ void Node::insertChild(Rect rect) {
 }
 
 void Node::removeChild(Rect rect) {
-    // TODO
+    // remove rect in children
+    this->m_children.erase(std::remove_if(this->m_children.begin(), this->m_children.end(), [rect](Node* n) { return n->getRect() == rect; }), this->m_children.end());
 }
 
 bool Node::operator==(const Node& n) const {
@@ -124,6 +127,11 @@ void updateRect(Node* currNode, Rect rect) {
     double ury = std::max(currNode->getRect().getUpperRight().getLat(), rect.getUpperRight().getLat());
     newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
     currNode->setRect(newRect);
+}
+
+bool Node::isInside(Rect r1, Rect r2) {
+    // check if r1 is inside r2
+    return (r1.getLowerLeft().getLong() >= r2.getLowerLeft().getLong()) && (r1.getLowerLeft().getLat() >= r2.getLowerLeft().getLat()) && (r1.getUpperRight().getLong() <= r2.getUpperRight().getLong()) && (r1.getUpperRight().getLat() <= r2.getUpperRight().getLat());
 }
 
 bool Node::isLeaf() const {
