@@ -70,8 +70,29 @@ void Rtree::remove(Node *node, Rect rect) {
     }
 }
 
-void Rtree::search(Rect rect) {
-    // TODO
+void Rtree::search(Node *root, Rect rect, std::vector<Rect> &result) {
+    // start from the root node
+
+    // If T is not a leaf node:
+    // Check all entries E in T for overlap with the search region rect.
+    // Recursively search in the subtree for all entries E.
+    if (!root->isLeaf()) {
+        for (auto *child : root->getChildren()) {
+            if (child->isInside(child->getRect(), rect) || child->isOverlap(rect, child->getRect())) {
+                search(child, rect, result);
+            }
+        }
+    }
+
+    // If T is a leaf node:
+    // Check all entries E in T for overlap with the search region rect.
+    // All overlapped entries E are part of the query result.
+    if (root->isLeaf()) {
+        if (root->isInside(root->getRect(), rect) || root->isOverlap(rect, root->getRect())) {
+            // std::cout << "Node: (" << root->getRect().getLowerLeft().getLong() << ", " << root->getRect().getLowerLeft().getLat() << "), (" << root->getRect().getUpperRight().getLong() << ", " << root->getRect().getUpperRight().getLat() << ")"<< std::endl;
+            result.push_back(root->getRect());
+        }
+    }
 }
 
 Node *Rtree::chooseLeafAsParent(Node *currNode, Rect rect) {

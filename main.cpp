@@ -40,5 +40,15 @@ int main(){
     std::cout << std::endl;
     std::cout << "traverse the tree" << std::endl;
     rtree.traverse(root);
+
+    // search
+    std::cout << std::endl;
+    std::cout << "Search:" << std::endl;
+    std::vector<Rect> result;
+    rtree.search(root, Rect(Point(3.5, 1.5), Point(6, 6), 0), result);
+    std::cout << "result size=" << result.size() << std::endl;
+    for (int i = 0; i < result.size(); i++) {
+        std::cout << result[i] << std::endl;
+    }
     return 0;
 }

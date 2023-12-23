@@ -35,6 +35,12 @@ public:
 
     bool operator==(const Rect&) const;
     bool operator!=(const Rect&) const;
+    // operator <<
+    friend std::ostream& operator<<(std::ostream& os, const Rect& rect) {
+        os << "Rect(" << rect.m_ll.getLong() << ", " << rect.m_ll.getLat() << ", " << rect.m_ur.getLong() << ", " << rect.m_ur.getLat() << ", " << rect.m_id << ")";
+        return os;
+    }
+
 
     const Point& getLowerLeft() const { return m_ll; }
     const Point& getUpperRight() const { return m_ur; } 
@@ -61,6 +67,12 @@ public:
 
     bool operator==(const Node&) const;
     bool operator!=(const Node&) const;
+    
+    // operator <<
+    friend std::ostream& operator<<(std::ostream& os, const Node& node) {
+        os << "Node(" << node.m_rect.getLowerLeft().getLong() << ", " << node.m_rect.getLowerLeft().getLat() << ", " << node.m_rect.getUpperRight().getLong() << ", " << node.m_rect.getUpperRight().getLat() << ", " << node.m_rect.getArea() << ")";
+        return os;
+    }
 
     const Rect& getRect() const { return m_rect; }
     const Node* getChild(int) const;
@@ -72,6 +84,7 @@ public:
     void setIsLeaf(bool);
     void updateRect(Node*, Rect);
     bool isInside(Rect, Rect);
+    bool isOverlap(Rect, Rect);
 
     bool isLeaf() const;
 
