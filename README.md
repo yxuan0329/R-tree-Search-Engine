@@ -46,10 +46,10 @@ multi-dimensional searching service.
 ### Feature Overview
 The library includes:
 
-- ``Rtree()``: build a r-tree
-- ``insert()``: insert a node in r-tree
-- ``remove()``: delete a node in r-tree
-- ``search()``: search for all the available results in r-tree
+- ``Rtree()``: Initialize a r-tree
+- ``insert()``: Insert a reactangle area in r-tree
+- ``remove()``: Delete a rectangle area in r-tree
+- ``search()``: Search for all the available results in r-tree
 
 ### Architecture
 
