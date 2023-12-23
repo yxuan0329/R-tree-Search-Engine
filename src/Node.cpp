@@ -134,6 +134,15 @@ bool Node::isInside(Rect r1, Rect r2) {
     return (r1.getLowerLeft().getLong() >= r2.getLowerLeft().getLong()) && (r1.getLowerLeft().getLat() >= r2.getLowerLeft().getLat()) && (r1.getUpperRight().getLong() <= r2.getUpperRight().getLong()) && (r1.getUpperRight().getLat() <= r2.getUpperRight().getLat());
 }
 
+bool Node::isOverlap(Rect r1, Rect r2) {
+    // make sure r1 is the left rect and r2 is the right rect
+    if (r1.getLowerLeft().getLong() > r2.getLowerLeft().getLong()) {
+        std::swap(r1, r2);
+    }
+    // check if r1 is overlap with r2
+    return (r1.getUpperRight().getLong() >= r2.getLowerLeft().getLong()) && (r1.getUpperRight().getLat() >= r2.getLowerLeft().getLat()) && (r1.getLowerLeft().getLong() <= r2.getUpperRight().getLong()) && (r1.getLowerLeft().getLat() <= r2.getUpperRight().getLat());    
+}
+
 bool Node::isLeaf() const {
     return m_children.empty();
 }
