@@ -14,6 +14,13 @@ Rtree::Rtree() {
     this->m_treeSize = 1;
 }
 
+Rtree::Rtree(int m, int M) {
+    this->m_root = new Node();
+    this->m_treeSize = 1;
+    this->m_maxChildren = M;
+    this->m_minChildren = m;
+}
+
 Rtree::~Rtree() {
     // delete this;
 }

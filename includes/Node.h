@@ -96,7 +96,6 @@ private:
     Rect m_rect; // bounding box of this node
     std::vector<Node*> m_children; // children nodes
     Node* m_parent; // parent node
-    int maxChildrenSize = 4; // the maximum number of children in a node
 };
 
 #endif
