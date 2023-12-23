@@ -57,7 +57,6 @@ Node::Node() { // create a single new leaf node in the tree
     // this->m_rect = Rect(Point(0, 0), Point(0, 0), 0);
     this->m_parent = nullptr;
     this->m_children = {};
-    this->m_isLeafNode = true;
 }
 
 Node::~Node() {
@@ -71,14 +70,17 @@ Node::Node(Rect rect, Node* parent=nullptr, std::vector<Node*> children={}, bool
     this->m_rect = rect;
     this->m_parent = parent;
     this->m_children = children;
-    this->m_isLeafNode = isLeaf;
 }
 
 void Node::insertChild(Rect rect) {
-    this->m_isLeafNode = false;
     Node *newNode = new Node(rect);
     m_children.push_back(new Node(rect));
     newNode->setParent(this);
+}
+
+void Node::insertChild(Node* node) {
+    m_children.push_back(node);
+    node->setParent(this);
 }
 
 void Node::removeChild(Rect rect) {
@@ -125,7 +127,7 @@ void updateRect(Node* currNode, Rect rect) {
     double lly = std::min(currNode->getRect().getLowerLeft().getLat(), rect.getLowerLeft().getLat());
     double urx = std::max(currNode->getRect().getUpperRight().getLong(), rect.getUpperRight().getLong());
     double ury = std::max(currNode->getRect().getUpperRight().getLat(), rect.getUpperRight().getLat());
-    newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+    newRect = Rect(Point(llx, lly), Point(urx, ury), currNode->getRect().getId());
     currNode->setRect(newRect);
 }
 
@@ -144,5 +146,18 @@ bool Node::isOverlap(Rect r1, Rect r2) {
 }
 
 bool Node::isLeaf() const {
+    // this node is a leaf node if it has no children
+    if (m_children.empty()) return true;
+
+    // check if all children are rect nodes, 
+    // if so, this node is a leaf node
+    for (auto child : m_children) {
+        if (!child->isRect()) return false;
+    }
+    return true;
+}
+
+bool Node::isRect() const {
+    // if this node contains empty children, it is a rect node
     return m_children.empty();
 }

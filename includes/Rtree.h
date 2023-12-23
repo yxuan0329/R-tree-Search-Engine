@@ -21,7 +21,7 @@ public:
     void insert(Rect);
     void remove(Node *, Rect);
     void search(Node *, Rect, std::vector<Rect>&);
-    Node *chooseLeafAsParent(Node*, Rect);
+    Node *chooseLeaf(Node*, Rect);
     Node *splitNewNode(Node*);
     void adjustTree(Node*, Node*);
     void clearTree();
