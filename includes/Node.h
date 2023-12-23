@@ -1,6 +1,7 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include <ostream>
 #include <vector>
 
 // define point with logitude, latitude, 
