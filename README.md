@@ -10,30 +10,32 @@ R-tree-Search-Engine/
 │   ├── generate_data.py
 │   └── testdata.txt
 │
-├── example/
-│   ├── main.cpp
-│   └── run.py
-│
 ├── includes/
 │   ├── Node.h
 │   └── Rtree.h
 │
 ├── Makefile
 │   
+├── main.cpp
+│ 
 ├── performance/
 │   ├── baseline.py
 │   ├── ours.py
 │   └── plot.py
-│
+│ 
+├── README.md
+|
+├── run.py
+|
 ├── src/
 │   ├── Node.cpp
 |   ├── pybind.cpp
 │   └── Rtree.cpp
 │
-├── tests/
-│   └── test_Rtree.py
-│
-└── README.md
+└──tests/
+    └── test_Rtree.py
+
+ 
 ```
 
 
