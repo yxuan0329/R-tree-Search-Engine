@@ -43,7 +43,7 @@ int main(){
     // traverse the tree
     std::cout << std::endl;
     std::cout << "Traverse the tree:" << std::endl;
-    rtree.traverse(root);
+    std::vector<int> vec = rtree.traverse(root);
 
     // search
     std::cout << std::endl;

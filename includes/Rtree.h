@@ -28,7 +28,7 @@ public:
     void clearTree();
 
     // traverse for debugging
-    void traverse(Node*);  
+    std::vector<int> traverse(Node*);  
     int getHeight(Node*);  
 
 private:
