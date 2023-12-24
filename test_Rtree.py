@@ -2,6 +2,8 @@ import rtree as rtreelib
 import pytest
 import math
 import random
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 import _Rtree
 
@@ -19,6 +21,9 @@ def test_init():
     assert Rtree.getSize() == 2
 
 def test_split():
+    # Create a figure and axis
+    fig, ax = plt.subplots()
+
     Rtree = _Rtree.Rtree()
     p1 = _Rtree.Point(0, 0)
     p2 = _Rtree.Point(2, 2)
@@ -47,15 +52,32 @@ def test_split():
         y1 = random.randint(0, 20)
         p1 = _Rtree.Point(x1, y1)
 
-        x2 = random.randint(0, 20)
-        y2 = random.randint(0, 20)
+        x2 = random.randint(10, 50)
+        y2 = random.randint(10, 50)
         p2 = _Rtree.Point(x2, y2)
 
         r = _Rtree.Rect(p1, p2, i)
         Rtree.insert(r)
+        
+        # draw the rectangle on the figure
+        rect = patches.Rectangle((x1, y1), x2-x1, y2-y1, linewidth=1, edgecolor='r', facecolor='none')
+        ax.add_patch(rect)
+        ax.text(x1, y1, f'Rect {i}', fontsize=8, ha='right')
+
+                
     assert Rtree.getSize() == 8
     assert Rtree.getHeight(Rtree.getRoot()) <= 3
 
     Rtree.remove(Rtree.getRoot(), r2)
     assert Rtree.getSize() == 7
     assert Rtree.getHeight(Rtree.getRoot()) <= 3
+
+    # Set labels and title
+    ax.set_xlabel('X-axis')
+    ax.set_ylabel('Y-axis')
+    ax.set_title('R tree visualization')
+
+    # Add legend
+    ax.legend()
+    plt.savefig('output.jpg')
+    plt.show()
