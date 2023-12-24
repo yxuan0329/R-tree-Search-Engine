@@ -70,19 +70,17 @@ This library provides to C++ and python users. The users can include the library
 ``` c++
 // add this at the head of your code
 #include “.includes/Rtree.h”
-
-// add this before your main function
-using namespace RtreeLib;
 ```
-4. Compile your program with linking the library.
-The C++ users can include when compiling.
+2. Compile your program with linking the library.
+The C++ users can include when compiling. See [main.cpp](./main.cpp) for more details.
 
   ```bash
-  $ g++ main.cpp -o -lRtreeLib
+  $ g++ main.cpp -o -l_Rtree
   ```
 
 ### For python users
 The Python users can import the library by adding the script.
+See [main.py](./main.py) for more details.
 
   ```python
   import r-tree-lib
