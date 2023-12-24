@@ -21,6 +21,8 @@ jobs:
           pip install pybind11 
           pip install pytest 
           pip install rtree
+          pip install numpy
+          pip install matplotlib
       
     - name: make
       run: make
