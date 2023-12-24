@@ -35,6 +35,7 @@ namespace RtreeLib {
         Node* m_root; // the root of tree
         int m_treeSize = 0; // the number of nodes in the tree
         size_t m_maxChildren = 4; // the maximum number of children in a node
+        size_t m_minChildren = 2; // the minimum number of children in a node
     };
 }
 #endif

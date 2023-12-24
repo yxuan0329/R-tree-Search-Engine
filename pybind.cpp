@@ -46,7 +46,7 @@ PYBIND11_MODULE(_Rtree, m) {
         .def("insert", &Rtree::insert)
         .def("remove", &Rtree::remove)
         .def("search", &Rtree::search)
-        .def("chooseLeafAsParent", &Rtree::chooseLeafAsParent)
+        .def("chooseLeaf", &Rtree::chooseLeaf)
         .def("getOverlapArea", &Rtree::getOverlapArea)
         .def("splitNewNode", &Rtree::splitNewNode)
         .def("adjustTree", &Rtree::adjustTree)
