@@ -38,19 +38,17 @@ PYBIND11_MODULE(_Rtree, m) {
         .def("__eq__", &Node::operator==)
         .def("__neq__", &Node::operator!=);
 
-    py::class_<Rtree>(m, "Rtree")
+    py::class_<RtreeLib::Rtree>(m, "Rtree")
         .def(py::init<>())
         .def(py::init<Node*>())
-        .def("getRoot", &Rtree::getRoot, py::return_value_policy::reference)
-        .def("getSize", &Rtree::getSize)
-        .def("insert", &Rtree::insert)
-        .def("remove", &Rtree::remove)
-        .def("search", &Rtree::search)
-        .def("chooseLeafAsParent", &Rtree::chooseLeafAsParent)
-        .def("getOverlapArea", &Rtree::getOverlapArea)
-        .def("splitNewNode", &Rtree::splitNewNode)
-        .def("adjustTree", &Rtree::adjustTree)
-        .def("clearTree", &Rtree::clearTree)
-        .def("traverse", &Rtree::traverse)
-        .def("getHeight", &Rtree::getHeight);
+        .def("getRoot", &RtreeLib::Rtree::getRoot, py::return_value_policy::reference)
+        .def("getSize", &RtreeLib::Rtree::getSize)
+        .def("insert", &RtreeLib::Rtree::insert)
+        .def("remove", &RtreeLib::Rtree::remove)
+        .def("search", &RtreeLib::Rtree::search)
+        .def("chooseLeafAsParent", &RtreeLib::Rtree::chooseLeafAsParent)
+        .def("getOverlapArea", &RtreeLib::Rtree::getOverlapArea)
+        .def("clearTree", &RtreeLib::Rtree::clearTree)
+        .def("traverse", &RtreeLib::Rtree::traverse)
+        .def("getHeight", &RtreeLib::Rtree::getHeight);
 }
