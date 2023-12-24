@@ -47,14 +47,20 @@ void Rtree::insert(Rect rect) {
 }
 
 void Rtree::remove(Node *node, Rect rect) {
-    // check if the node's children includes rect
-    // if yes, then recursively search until find the node's child == rect
-
+    // check if the node's children has overlap with rect
+    // if yes, then recursively search and delete rect that has overlap with rect
+    // if no, then return
     for (auto *child : node->getChildren()) {
         // if child == rect, then remove child from node
         if (child->getRect() == rect) {
             node->removeChild(rect);
             this->m_treeSize --;
+
+            // if no children left, then delete node
+            if (node->getChildren().size() == 0) {
+                Node *parent = node->getParent();
+                parent->removeChild(node->getRect());
+            }
         }
 
         // if child is not leaf, then recursively search
@@ -200,7 +206,6 @@ Node *Rtree::splitNewNode(Node *currNode) {
         double lly = std::min(childRect.getLowerLeft().getLat(), currRect.getLowerLeft().getLat());
         double urx = std::max(childRect.getUpperRight().getLong(), currRect.getUpperRight().getLong());
         double ury = std::max(childRect.getUpperRight().getLat(), currRect.getUpperRight().getLat());
-        std::cout << llx << " " << lly << " " << urx << " " << ury << std::endl;
         currRect = Rect(Point(llx, lly), Point(urx, ury), currNode->getRect().getId());
 
         currIsLeaf = currIsLeaf && child->isLeaf();
@@ -277,7 +282,7 @@ void Rtree::traverse(Node *currNode) {
         queue.erase(queue.begin());
         if (!currNode->isRect()) std::cout << "Node: ";
         else std::cout << "Rect: ";
-        std::cout << "(" << currNode->getRect().getLowerLeft().getLong() << ", " << currNode->getRect().getLowerLeft().getLat() << "), (" << currNode->getRect().getUpperRight().getLong() << ", " << currNode->getRect().getUpperRight().getLat() << ") size=" << currNode->getChildren().size() << std::endl;
+        std::cout << "(" << currNode->getRect().getLowerLeft().getLong() << ", " << currNode->getRect().getLowerLeft().getLat() << "), (" << currNode->getRect().getUpperRight().getLong() << ", " << currNode->getRect().getUpperRight().getLat() << ") size=" << currNode->getChildren().size() << " isLeaf=" << currNode->isLeaf() << std::endl;
 
         if (!currNode->isRect()) {
             for (auto *child : currNode->getChildren()) {

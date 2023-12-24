@@ -32,6 +32,7 @@ public:
     Rect();
     ~Rect();
 
+    Rect(Point, Point); // lower-left, upper-right
     Rect(Point, Point, int); // lower-left, upper-right, id
 
     bool operator==(const Rect&) const;

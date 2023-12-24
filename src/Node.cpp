@@ -38,6 +38,12 @@ Rect::~Rect() {
     // delete this;
 }
 
+Rect::Rect(Point lower, Point upper) {
+    this->m_ll = lower;
+    this->m_ur = upper;
+    this->m_id = 0;
+}
+
 Rect::Rect(Point lower, Point upper, int id) {
     this->m_ll = lower;
     this->m_ur = upper;
