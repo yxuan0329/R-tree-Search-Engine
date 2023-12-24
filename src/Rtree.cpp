@@ -8,13 +8,15 @@
 #include <../includes/Node.h>
 #include <Rtree.h>
 
+using namespace RtreeLib;
+
 // Rtree
 Rtree::Rtree() {
     this->m_root = new Node();
     this->m_treeSize = 1;
 }
 
-Rtree::Rtree(int m, int M) {
+Rtree::Rtree(size_t m, size_t M) {
     this->m_root = new Node();
     this->m_treeSize = 1;
     this->m_maxChildren = M;

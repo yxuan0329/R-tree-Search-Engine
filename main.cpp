@@ -2,14 +2,12 @@
 #include <vector>
 #include <algorithm>
 
-#include "includes/Node.h"
 #include "includes/Rtree.h"
 
 
 int main(){
     std::cout << "Rtree main function" << std::endl;
-
-    Rtree rtree = Rtree(2, 4);
+    RtreeLib::Rtree rtree = RtreeLib::Rtree(2, 4);
     std::cout << "root=" << rtree.getRoot() << std::endl;
     rtree.insert(Rect(Point(0, 0), Point(2, 2), 1));
     rtree.insert(Rect(Point(3, 3), Point(4, 4), 2));
