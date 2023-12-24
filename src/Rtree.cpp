@@ -207,7 +207,6 @@ Node *Rtree::splitNewNode(Node *currNode) {
         double urx = std::max(childRect.getUpperRight().getLong(), currRect.getUpperRight().getLong());
         double ury = std::max(childRect.getUpperRight().getLat(), currRect.getUpperRight().getLat());
         currRect = Rect(Point(llx, lly), Point(urx, ury), currNode->getRect().getId());
-
         currIsLeaf = currIsLeaf && child->isLeaf();
     }
 
@@ -282,6 +281,7 @@ void Rtree::traverse(Node *currNode) {
         queue.erase(queue.begin());
         if (!currNode->isRect()) std::cout << "Node: ";
         else std::cout << "Rect: ";
+
         std::cout << "(" << currNode->getRect().getLowerLeft().getLong() << ", " << currNode->getRect().getLowerLeft().getLat() << "), (" << currNode->getRect().getUpperRight().getLong() << ", " << currNode->getRect().getUpperRight().getLat() << ") size=" << currNode->getChildren().size() << " isLeaf=" << currNode->isLeaf() << std::endl;
 
         if (!currNode->isRect()) {
