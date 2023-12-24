@@ -16,6 +16,13 @@ Rtree::Rtree() {
     this->m_treeSize = 1;
 }
 
+Rtree::Rtree(int m, int M) {
+    this->m_root = new Node();
+    this->m_treeSize = 1;
+    this->m_maxChildren = M;
+    this->m_minChildren = m;
+}
+
 Rtree::~Rtree() {
     // delete this;
 }
@@ -29,26 +36,33 @@ Node* Rtree::getRoot() const {
 }
 
 void Rtree::insert(Rect rect) {
-    Node *parent = chooseLeafAsParent(this->m_root, rect);
-    parent->insertChild(rect);
+    // recursively search from root, find the leaf node that has requires minimum area increase
+    Node *leaf = chooseLeaf(this->m_root, rect);
+    leaf->insertChild(rect);
 
-    // if the parent has more than m_maxChildren children, then split the parent
-    if (parent->getChildren().size() > m_maxChildren) {
-        Node *splitNode = splitNewNode(parent);
-        adjustTree(parent, splitNode);
+    // if the leaf has more than m_maxChildren children, then split the leaf
+    if (leaf->getChildren().size() > m_maxChildren) {
+        Node *splitNode = splitNewNode(leaf);
+        adjustTree(leaf, splitNode);
     }
     this->m_treeSize ++;
 }
 
 void Rtree::remove(Node *node, Rect rect) {
-    // check if the node's children includes rect
-    // if yes, then recursively search until find the node's child == rect
-
+    // check if the node's children has overlap with rect
+    // if yes, then recursively search and delete rect that has overlap with rect
+    // if no, then return
     for (auto *child : node->getChildren()) {
         // if child == rect, then remove child from node
         if (child->getRect() == rect) {
             node->removeChild(rect);
             this->m_treeSize --;
+
+            // if no children left, then delete node
+            if (node->getChildren().size() == 0) {
+                Node *parent = node->getParent();
+                parent->removeChild(node->getRect());
+            }
         }
 
         // if child is not leaf, then recursively search
@@ -66,7 +80,7 @@ void Rtree::remove(Node *node, Rect rect) {
                 urx = std::max(childRect.getUpperRight().getLong(), urx);
                 ury = std::max(childRect.getUpperRight().getLat(), ury);
             }
-            newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+            newRect = Rect(Point(llx, lly), Point(urx, ury), node->getRect().getId());
             node->setRect(newRect);
         }
     }
@@ -90,54 +104,72 @@ void Rtree::search(Node *root, Rect rect, std::vector<Rect> &result) {
     // Check all entries E in T for overlap with the search region rect.
     // All overlapped entries E are part of the query result.
     if (root->isLeaf()) {
-        if (root->isInside(root->getRect(), rect) || root->isOverlap(rect, root->getRect())) {
-            // std::cout << "Node: (" << root->getRect().getLowerLeft().getLong() << ", " << root->getRect().getLowerLeft().getLat() << "), (" << root->getRect().getUpperRight().getLong() << ", " << root->getRect().getUpperRight().getLat() << ")"<< std::endl;
-            result.push_back(root->getRect());
+        // check all its rect children
+        for (auto *child : root->getChildren()) {
+            if (child->isInside(child->getRect(), rect) || child->isOverlap(rect, child->getRect())) {
+                result.push_back(child->getRect());
+            }
         }
     }
 }
 
-Node *Rtree::chooseLeafAsParent(Node *currNode, Rect rect) {
-    // search from root, find the leaf node that has the maximum overlap area with rect
+Node *Rtree::chooseLeaf(Node *currNode, Rect rect) {
+    // search from root, find the leaf node that has requires minimum area increase
     // and return the leaf node
     if (currNode->isLeaf()) {
         return currNode;
     } 
 
     Node *selectedChild = nullptr;
-    double maxOverlappedArea = 0.0;
+    double minOverlappedIncrease = (double)INT_MAX;
+
+    // update the rect of currNode itself to include inserted rect
+    Rect newRect1 = currNode->getRect();
+    double llx1 = std::min(currNode->getRect().getLowerLeft().getLong(), rect.getLowerLeft().getLong());
+    double lly1 = std::min(currNode->getRect().getLowerLeft().getLat(), rect.getLowerLeft().getLat());
+    double urx1 = std::max(currNode->getRect().getUpperRight().getLong(), rect.getUpperRight().getLong());
+    double ury1 = std::max(currNode->getRect().getUpperRight().getLat(), rect.getUpperRight().getLat());
+    newRect1 = Rect(Point(llx1, lly1), Point(urx1, ury1), currNode->getRect().getId());
+    currNode->setRect(newRect1);
+
 
     for (auto *child : currNode->getChildren()) {
-        // if overlap of rect and child.area > maxOverlappedArea,
-        // then selectedChild = child, 
-        // maxOverlappedArea = overlap area of rect and child.area
-        double overlapArea = getOverlapArea(rect, child->getRect());
-        if (overlapArea > maxOverlappedArea) {
+        // calculate the area increase if insert rect into child
+        // set a new rect if insert rect into child
+        Rect possibleChildRect = child->getRect();
+        double llx = std::min(possibleChildRect.getLowerLeft().getLong(), rect.getLowerLeft().getLong());
+        double lly = std::min(possibleChildRect.getLowerLeft().getLat(), rect.getLowerLeft().getLat());
+        double urx = std::max(possibleChildRect.getUpperRight().getLong(), rect.getUpperRight().getLong());
+        double ury = std::max(possibleChildRect.getUpperRight().getLat(), rect.getUpperRight().getLat());
+        
+        possibleChildRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+
+        // calculate the area increase
+        double areaIncrease = possibleChildRect.getArea() - child->getRect().getArea();
+
+        // if areaIncrease is smaller than minOverlappedIncrease, then update minOverlappedIncrease and selectedChild
+        if (areaIncrease < minOverlappedIncrease) {
+            minOverlappedIncrease = areaIncrease;
             selectedChild = child;
-            maxOverlappedArea = overlapArea;
+        } else if (areaIncrease == minOverlappedIncrease) {
+            // if areaIncrease is equal to minOverlappedIncrease, then choose the one with smaller area
+            if (possibleChildRect.getArea() < selectedChild->getRect().getArea()) {
+                selectedChild = child;
+            }
         }
     }
 
-    // if maxOverlappedArea == 0.0, means there is no overlap between rect and currNode,
-    // then set currNode as selectedChild,
-    // rect will be split as a new leaf node
-    if (maxOverlappedArea == 0.0) {
-        return currNode;
-    }
-
-    // if maxOverlappedArea > 0.0, means there is overlap between rect and currNode,
-    //  then update current rectangle of selectedChild to include rect
+    // Update current rectangle of selectedChild to include rect
     // selectedChild->updateRect(selectedChild, rect);
     Rect newRect = selectedChild->getRect();
     double llx = std::min(selectedChild->getRect().getLowerLeft().getLong(), rect.getLowerLeft().getLong());
     double lly = std::min(selectedChild->getRect().getLowerLeft().getLat(), rect.getLowerLeft().getLat());
     double urx = std::max(selectedChild->getRect().getUpperRight().getLong(), rect.getUpperRight().getLong());
     double ury = std::max(selectedChild->getRect().getUpperRight().getLat(), rect.getUpperRight().getLat());
-    newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+    newRect = Rect(Point(llx, lly), Point(urx, ury), selectedChild->getRect().getId());
     selectedChild->setRect(newRect);
 
-    return chooseLeafAsParent(selectedChild, rect);
-    
+    return chooseLeaf(selectedChild, rect);
 }
 
 double Rtree::getOverlapArea(Rect rect1, Rect rect2) {
@@ -151,28 +183,32 @@ double Rtree::getOverlapArea(Rect rect1, Rect rect2) {
 Node *Rtree::splitNewNode(Node *currNode) {
     // split the currNode into two nodes, and return the new node
 
-    // sort children by x-coord of lower-left corner
+    // sort children by x-coord of lower-left corner, 
+    // if tie, then sort by y-coord of lower-left corner
     std::vector<Node*> children = currNode->getChildren();
     std::sort(children.begin(), children.end(), [](Node *a, Node *b) {
+        if (a->getRect().getLowerLeft().getLong() == b->getRect().getLowerLeft().getLong()) {
+            return a->getRect().getLowerLeft().getLat() < b->getRect().getLowerLeft().getLat();
+        }
         return a->getRect().getLowerLeft().getLong() < b->getRect().getLowerLeft().getLong();
     });
 
     // split the children into two groups
-    size_t splitIndex = children.size() / 2;
+    size_t splitIndex = children.size() / 2; // left side may be more or equal to right side
     std::vector<Node*> leftGroup(children.begin(), children.begin() + splitIndex);
     std::vector<Node*> rightGroup(children.begin() + splitIndex, children.end());
 
     // according to the rect in leftGroup, find minimum bounding rect
-    Rect currRect = currNode->getRect();
-    bool currIsLeaf = true;
+    Rect currRect = currNode->getChildren()[0]->getRect();
+    bool currIsLeaf = currNode->isLeaf();
+    bool newIsLeaf = currIsLeaf;
     for (auto *child : leftGroup) {
         Rect childRect = child->getRect();
         double llx = std::min(childRect.getLowerLeft().getLong(), currRect.getLowerLeft().getLong());
         double lly = std::min(childRect.getLowerLeft().getLat(), currRect.getLowerLeft().getLat());
         double urx = std::max(childRect.getUpperRight().getLong(), currRect.getUpperRight().getLong());
         double ury = std::max(childRect.getUpperRight().getLat(), currRect.getUpperRight().getLat());
-        currRect = Rect(Point(llx, lly), Point(urx, ury), 0);
-
+        currRect = Rect(Point(llx, lly), Point(urx, ury), currNode->getRect().getId());
         currIsLeaf = currIsLeaf && child->isLeaf();
     }
 
@@ -182,7 +218,6 @@ Node *Rtree::splitNewNode(Node *currNode) {
 
     // according to the rect in rightGroup, find minimum bounding rect
     Rect newRect = rightGroup[0]->getRect();
-    bool newIsLeaf = true;
     for (auto *child : rightGroup) {
         Rect childRect = child->getRect();
         double llx = std::min(childRect.getLowerLeft().getLong(), newRect.getLowerLeft().getLong());
@@ -195,7 +230,7 @@ Node *Rtree::splitNewNode(Node *currNode) {
     }
 
     // create new node with the same coordinates as currNode
-    Node *newNode = new Node(newRect, nullptr, rightGroup, newIsLeaf);
+    Node *newNode = new Node(newRect, currNode->getParent(), rightGroup, newIsLeaf);
 
     return newNode;
 }
@@ -211,7 +246,7 @@ void Rtree::adjustTree(Node *currNode, Node *splitNode) {
         double lly = std::min(currNode->getRect().getLowerLeft().getLat(), splitNode->getRect().getLowerLeft().getLat());
         double urx = std::max(currNode->getRect().getUpperRight().getLong(), splitNode->getRect().getUpperRight().getLong());
         double ury = std::max(currNode->getRect().getUpperRight().getLat(), splitNode->getRect().getUpperRight().getLat());
-        newRect = Rect(Point(llx, lly), Point(urx, ury), 0);
+        newRect = Rect(Point(llx, lly), Point(urx, ury), 10);
 
         Node *newRoot = new Node(newRect, nullptr, {currNode, splitNode}, false);
         currNode->setParent(newRoot);
@@ -221,8 +256,8 @@ void Rtree::adjustTree(Node *currNode, Node *splitNode) {
         // if currNode is not root, then update the parent of currNode
         // and insert splitNode into the parent
         Node *parent = currNode->getParent();
-        parent->removeChild(currNode->getRect());
-        parent->insertChild(splitNode->getRect());
+        parent->insertChild(splitNode);
+        splitNode->setParent(parent);
 
         // if the parent has more than m_maxChildren children, then split the parent
         if (parent->getChildren().size() > m_maxChildren) {
@@ -246,10 +281,12 @@ void Rtree::traverse(Node *currNode) {
     while (!queue.empty()) {
         Node *currNode = queue.front();
         queue.erase(queue.begin());
+        if (!currNode->isRect()) std::cout << "Node: ";
+        else std::cout << "Rect: ";
 
-        std::cout << "Node: (" << currNode->getRect().getLowerLeft().getLong() << ", " << currNode->getRect().getLowerLeft().getLat() << "), (" << currNode->getRect().getUpperRight().getLong() << ", " << currNode->getRect().getUpperRight().getLat() << ") size=" << currNode->getChildren().size() << std::endl;
+        std::cout << "(" << currNode->getRect().getLowerLeft().getLong() << ", " << currNode->getRect().getLowerLeft().getLat() << "), (" << currNode->getRect().getUpperRight().getLong() << ", " << currNode->getRect().getUpperRight().getLat() << ") size=" << currNode->getChildren().size() << " isLeaf=" << currNode->isLeaf() << std::endl;
 
-        if (!currNode->isLeaf()) {
+        if (!currNode->isRect()) {
             for (auto *child : currNode->getChildren()) {
                 queue.push_back(child);
             }

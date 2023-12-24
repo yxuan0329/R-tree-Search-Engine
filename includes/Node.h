@@ -32,6 +32,7 @@ public:
     Rect();
     ~Rect();
 
+    Rect(Point, Point); // lower-left, upper-right
     Rect(Point, Point, int); // lower-left, upper-right, id
 
     bool operator==(const Rect&) const;
@@ -46,6 +47,7 @@ public:
     const Point& getLowerLeft() const { return m_ll; }
     const Point& getUpperRight() const { return m_ur; } 
     double getArea() const { return (m_ur.getLong() - m_ll.getLong()) * (m_ur.getLat() - m_ll.getLat()); }
+    int getId() const { return m_id; }
 
 private:
     Point m_ll; // lower-left point
@@ -64,6 +66,7 @@ public:
     Node(Rect, Node*, std::vector<Node*>, bool); // rect, parent, children, isLeaf
 
     void insertChild(Rect);
+    void insertChild(Node*);
     void removeChild(Rect);
 
     bool operator==(const Node&) const;
@@ -88,13 +91,12 @@ public:
     bool isOverlap(Rect, Rect);
 
     bool isLeaf() const;
+    bool isRect() const;
 
 private:
     Rect m_rect; // bounding box of this node
     std::vector<Node*> m_children; // children nodes
     Node* m_parent; // parent node
-    bool m_isLeafNode; // is leaf node or not
-    int maxChildrenSize = 4; // the maximum number of children in a node
 };
 
 #endif
