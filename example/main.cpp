@@ -1,11 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
 #include "includes/Rtree.h"
 
 
 int main(){
+    auto start_time = std::chrono::high_resolution_clock::now(); // start timer
     std::cout << "Rtree main function" << std::endl;
     Rtree rtree = Rtree(2, 4);
     std::cout << "root=" << rtree.getRoot() << std::endl;
@@ -41,5 +43,11 @@ int main(){
     for (int i = 0; i < result.size(); i++) {
         std::cout << result[i] << std::endl;
     }
+
+    auto end_time = std::chrono::high_resolution_clock::now(); // end timer
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+
+    std::cout << "Time taken by function: " << duration.count() << " microseconds" << std::endl;
+
     return 0;
 }

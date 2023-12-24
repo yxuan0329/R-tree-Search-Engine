@@ -3,6 +3,40 @@ A project that implement R-tree libary for spatial searching.
 
 GitHub Repository: https://github.com/yxuan0329/R-tree-Search-Engine
 
+```
+R-tree-Search-Engine/
+│
+├── datasets/
+│   ├── generate_data.py
+│   └── testdata.txt
+│
+├── example/
+│   ├── main.cpp
+│   └── run.py
+│
+├── includes/
+│   ├── Node.h
+│   └── Rtree.h
+│
+├── Makefile
+│   
+├── performance/
+│   ├── baseline.py
+│   ├── ours.py
+│   └── plot.py
+│
+├── src/
+│   ├── Node.cpp
+|   ├── pybind.cpp
+│   └── Rtree.cpp
+│
+├── tests/
+│   └── test_Rtree.py
+│
+└── README.md
+```
+
+
 ## Table of Contents
 - [Basic Information](#basic-information)
   - [Problem to Solve](#problem-to-solve)
@@ -92,6 +126,7 @@ See [main.py](./main.py) for more details.
 2. Version control: git
 3. Testing framework: Pytest
 4. Documentation: README.md
+5. Continuous Integration: GitHub Actions
 
   Testing data source: random-generated testing datasets including location and the 
   name of the place. 
