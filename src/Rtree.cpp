@@ -8,8 +8,6 @@
 #include <../includes/Node.h>
 #include <Rtree.h>
 
-using namespace RtreeLib;
-
 // Rtree
 Rtree::Rtree() {
     this->m_root = new Node();
