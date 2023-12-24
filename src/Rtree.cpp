@@ -16,7 +16,7 @@ Rtree::Rtree() {
 
 Rtree::Rtree(size_t m, size_t M) {
     this->m_root = new Node();
-    this->m_treeSize = 1;
+    this->m_treeSize = 0;
     this->m_maxChildren = M;
     this->m_minChildren = m;
 }
@@ -272,9 +272,10 @@ void Rtree::clearTree() {
 }
 
 // traverse in level order and print the tree area
-void Rtree::traverse(Node *currNode) {
+std::vector<int> Rtree::traverse(Node *currNode) {
     std::vector<Node*> queue;
     queue.push_back(currNode);
+    std::vector<int> idList;
 
     while (!queue.empty()) {
         Node *currNode = queue.front();
@@ -283,6 +284,7 @@ void Rtree::traverse(Node *currNode) {
         else std::cout << "Rect: ";
 
         std::cout << "(" << currNode->getRect().getLowerLeft().getLong() << ", " << currNode->getRect().getLowerLeft().getLat() << "), (" << currNode->getRect().getUpperRight().getLong() << ", " << currNode->getRect().getUpperRight().getLat() << ") size=" << currNode->getChildren().size() << " isLeaf=" << currNode->isLeaf() << std::endl;
+        idList.push_back(currNode->getRect().getId());
 
         if (!currNode->isRect()) {
             for (auto *child : currNode->getChildren()) {
@@ -290,6 +292,7 @@ void Rtree::traverse(Node *currNode) {
             }
         }
     }
+    return idList;
 }
 
 int Rtree::getHeight(Node *currNode) {
